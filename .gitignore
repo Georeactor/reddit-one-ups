@@ -1,0 +1,4 @@
+RC_*
+.DS_Store
+*.pyc
+credentials.json

@@ -1,0 +1,62 @@
+unzstd RC_2014-02.zst --memory=2048MB
+rm RC_2014-02.zst
+head -n 3 RC_2014-02
+{
+  "author_flair_text":null,
+  "id":"cf40d9m",
+  "downs":0,
+  "distinguished":null,
+  "link_id":"t3_1wodpm",
+  "subreddit_id":"t5_2sd8l",
+  "removal_reason":null,
+  "name":"t1_cf40d9m",
+  "retrieved_on":1432198569,
+  "parent_id":"t1_cf3xhwe",
+  "gilded":0,
+  "edited":false,
+  "author_flair_css_class":null,
+  "subreddit":"Stance",
+  "score":1,
+  "ups":1,
+  "controversiality":0,
+  "created_utc":"1391212800",
+  "body":"That makes sense thanks",
+  "author":"iRideBMX",
+  "archived":true,
+  "score_hidden":false
+  }
+
+reddit_json_converter.py
+
+postgres -D redditcom --max_wal_size=80000000
+psql -d comments
+
+;; on the fence about replacing all question marks here
+
+CREATE TABLE IF NOT EXISTS comments_2014_04 (
+    id VARCHAR(20),
+    body TEXT,
+    score INT,
+    parent_id VARCHAR(20),
+    author VARCHAR(30),
+    subreddit TEXT,
+    created_utc BIGINT,
+    parent_score INT,
+    cleantext TEXT
+);
+\copy comments_2014_04 FROM '2014_04.csv' CSV;
+
+SELECT COUNT(*), cleantext
+  FROM comments_2014_03
+  WHERE is_clapback AND cleantext != ''
+  GROUP BY cleantext
+  ORDER BY COUNT(*) DESC
+  LIMIT 50;
+
+not sure whether we need 24 months, or as much as possible, or what 
+
+\copy clapbacks to 'clapbacks.csv' DELIMITER ',' CSV HEADER;
+
+the seq2seq version frequently selects IAMA answers which score higher than the question,
+and thus picks the most popular comments from most popular IAMAs,
+which tend to be NSFW, so the situation may improve by selecting from non-IAMA subreddits.
